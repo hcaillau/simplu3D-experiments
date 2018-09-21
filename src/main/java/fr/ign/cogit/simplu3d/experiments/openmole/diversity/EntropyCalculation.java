@@ -1,28 +1,16 @@
 package fr.ign.cogit.simplu3d.experiments.openmole.diversity;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
-import javax.media.j3d.Sound;
-
-import org.apache.commons.math3.stat.descriptive.moment.Mean;
-
-import java.util.HashMap;
-
-import java.lang.Math;
-import java.lang.reflect.Array;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.io.vector.ShapeFileLoader;
-import fr.ign.cogit.simplu3d.model.Building;
 import fr.ign.cogit.simplu3d.rjmcmc.cuboid.geometry.impl.Cuboid;
 import fr.ign.cogit.simplu3d.rjmcmc.cuboid.geometry.loader.LoaderCuboid;
-import fr.ign.mpp.configuration.GraphConfiguration;
-import javassist.bytecode.analysis.Subroutine;
 
 public class EntropyCalculation {
    
@@ -128,6 +116,71 @@ public class EntropyCalculation {
   
   
   
+  //
+  public static Double KLdivXvsY(List<Double> X, List<Double> Y) {
+    
+    
+    // Count every value occurences in the two lists
+    HashMap<Double, Integer> mapX = new HashMap<Double, Integer>();
+    HashMap<Double, Integer> mapY = new HashMap<Double, Integer>();
+       
+    
+    
+    for (Double x : X) {
+      if (mapX.containsKey(x)) {
+        mapX.put(x, mapX.get(x) + 1);
+      } else {
+        mapX.put(x, 1);
+      }
+    }
+
+    for (Double y : Y) {
+      if (mapY.containsKey(y)) {
+        mapY.put(y, mapY.get(y) + 1);
+      } else {
+        mapY.put(y, 1);
+      }
+    }
+    
+    
+    
+  // proba distribution for x and y
+    HashMap<Double, Double> pX = new HashMap<Double, Double>();
+    HashMap<Double, Double> pY = new HashMap<Double, Double>();
+    for (Double x : mapX.keySet()) {
+        pX.put(x, mapX.get(x).doubleValue()/X.size());
+      }
+    for (Double y : mapY.keySet()) {
+      pY.put(y, mapY.get(y).doubleValue()/Y.size());
+    }
+  
+    
+    
+    
+    
+    // merge keys to constitute universe values of X and Y probabilities 
+  HashSet<Double> universe = new HashSet<Double>();
+    universe.addAll(mapX.keySet());
+    universe.addAll(mapY.keySet());
+//    System.out.println("clés X" + mapX.keySet());
+//    System.out.println("clés Y" + mapY.keySet());
+//    System.out.println("clés univers" + universe);
+    Double KLdivXY = 0.0 ;
+   
+    for (Double k : universe ) {
+      if (pY.containsKey(k) && pX.containsKey(k)) {
+        KLdivXY += pX.get(k)*Math.log(pX.get(k)/pY.get(k)) / Math.log(2);
+      }
+      
+    }
+    
+    
+    
+    return KLdivXY ;
+}
+  
+  
+  
   
   public static List<Double> dimsExtractor(FT_FeatureCollection<IFeature> collFeat, String dimName){
     List<Double> dims= new ArrayList<>();
@@ -165,11 +218,14 @@ public class EntropyCalculation {
     // LoaderCuboid.loadFromShapeFile("/home/paulchapron/dev/simplu3D-openmole/visuPSE/config.shp");
     System.out.println("load surrounding buildings");
 
-    FT_FeatureCollection<IFeature> surroundingFabric = ShapeFileLoader
-        .loadingShapeFile(
-            "/home/paulchapron/dev/visuPSEPremium/scriptQGIS_genThree.js/Bati_zone/batiment.shp",
-            "", "hauteur", true);
-
+//    FT_FeatureCollection<IFeature> surroundingFabric = ShapeFileLoader
+//        .loadingShapeFile(
+//            "/home/paulchapron/dev/visuPSEPremium/scriptQGIS_genThree.js/Bati_zone/batiment.shp",
+//            "", "hauteur", true);
+    
+    FT_FeatureCollection<IFeature> surroundingFabric = ShapeFileLoader.loadingShapeFile("/home/paulchapron/Bureau/titi.shp","", "hauteur", true);
+    
+    
     double configEntropy = ShannonEntropyCuboidsHeight(1,config);
     System.out.println("Entropie des hauteurs de la config: " + configEntropy);
 
@@ -184,7 +240,7 @@ public class EntropyCalculation {
     System.out.println("#####entropie jointe####");
     
     
-    List<Double> surroundingHeights = new ArrayList<>();
+    List<Double> surroundingHeights =  new ArrayList<>();
     for (IFeature batiment : surroundingFabric) {
       Double height = ((Long) batiment.getAttribute("hauteur")).doubleValue();
       surroundingHeights.add(binarize(height,1));
@@ -197,20 +253,67 @@ public class EntropyCalculation {
     for (Cuboid cc : config) {
       configHeights.add(binarize(cc.getHeight(),1));
     }
-    System.out.println(configHeights.size() +" hauteurs pour Y");
+    System.out.println(configHeights.size() +" hauteurs pour X");
     
+      
+  Double kl = KLdivXvsY(configHeights, surroundingHeights);
     
-    
-    Double jj = jointEntropyIndepVars(configHeights, surroundingHeights) ;
-    
-    
-    
-    System.out.println("joint entropy "+  jointEntropyIndepVars(configHeights, surroundingHeights));
+  System.out.println("divergence de Kullbakc Liebler   " + kl);
+  
+  System.out.println("########################################################");
+  
+  
+  
+  File path = new File("/home/paulchapron/dev/simplu3D-openmole/visuPSE/PSEshp/");
+
+  File klminSHPSoFar = new File("/home/paulchapron/dev/simplu3D-openmole/visuPSE/PSEshp/run_-2085940094869048084out.shp");
+  Double kldminSoFar =  Double.POSITIVE_INFINITY ;
+  
+  File klmaxSHPSoFar = new File("/home/paulchapron/dev/simplu3D-openmole/visuPSE/PSEshp/run_-2085940094869048084out.shp");
+  Double kldmaxSoFar =  Double.NEGATIVE_INFINITY ;
+  
    
-    System.out.println("entropie conjointe <= somme des entropies ? " + (jj <=(configEntropy + surroundEntropy)  ));
-    
-    
-    
+  
+  
+  
+  File [] files = path.listFiles();
+  for (int i = 0; i < files.length  ; i++){
+      if (files[i].isFile() && files[i].getName().endsWith(".shp")){ 
+        
+        List<Cuboid> conf = LoaderCuboid.loadFromShapeFile(files[i].getPath());
+        if(conf.size()==0) {
+          System.out.println("=#=#=#=#=#=#=#=#=#=#=#=#config vide  !!!");
+        }
+        
+        
+          List<Double> confHeights = new ArrayList<>();
+          for (Cuboid cc : conf) {
+            confHeights.add(binarize(cc.getHeight(),1));
+         }
+          Double kld = KLdivXvsY(confHeights, surroundingHeights);
+          if (kld < kldminSoFar) {
+            System.out.println("divergence de Kullbakc Liebler minimum pour l'instant " + kld+ "  pour "+ files[i].getName() +" "+ i +"/" + files.length);
+            klminSHPSoFar = files[i] ;
+            kldminSoFar = kld ;
+          }
+          if (kld > kldmaxSoFar) {
+            System.out.println("divergence de Kullbakc Liebler maximum pour l'instant " + kld+ "  pour "+ files[i].getName() +" "+ i +"/" + files.length);
+            klmaxSHPSoFar = files[i] ;
+            kldmaxSoFar = kld ;
+          }
+          
+          
+      
+      }
+  }
+  
+  
+  
+  
+  
+  
+    System.out.println("ayé ! \n fichier de divergence mini par rapport à autour : " + klminSHPSoFar.getName() );
+    System.out.println("fichier de divergence maxi par rapport à autour : " + klmaxSHPSoFar.getName() );
     
     System.exit(0);
     

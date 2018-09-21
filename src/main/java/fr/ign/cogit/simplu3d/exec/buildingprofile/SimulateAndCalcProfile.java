@@ -19,10 +19,11 @@ import fr.ign.cogit.simplu3d.model.Road;
 import fr.ign.cogit.simplu3d.rjmcmc.cuboid.geometry.impl.Cuboid;
 import fr.ign.cogit.simplu3d.rjmcmc.cuboid.optimizer.cuboid.OptimisedBuildingsCuboidFinalDirectRejection;
 import fr.ign.cogit.simplu3d.rjmcmc.generic.predicate.SamplePredicate;
+import fr.ign.cogit.simplu3d.util.SimpluParameters;
+import fr.ign.cogit.simplu3d.util.SimpluParametersJSON;
 import fr.ign.mpp.configuration.BirthDeathModification;
 import fr.ign.mpp.configuration.GraphConfiguration;
 import fr.ign.mpp.configuration.GraphVertex;
-import fr.ign.parameters.Parameters;
 
 public class SimulateAndCalcProfile {
 
@@ -32,7 +33,7 @@ public class SimulateAndCalcProfile {
 		// information and simulated annealing configuration
 		String folderName = BasicSimulator.class.getClassLoader().getResource("scenario/").getPath();
 		String fileName = "building_parameters_project_expthese_3.xml";
-		Parameters p = Parameters.unmarshall(new File(folderName + fileName));
+		SimpluParameters p = new SimpluParametersJSON(new File(folderName + fileName));
 
 		// Load default environment (data are in resource directory)
 		Environnement env = LoaderSHP.loadNoDTM(new File(
@@ -92,12 +93,9 @@ public class SimulateAndCalcProfile {
 		System.out.println("NB Points : " + featCollOut.size());
 	}
 
-	public static Profile calculateProfile(Environnement environnement,
-			IFeatureCollection<IFeature> featCuboid) {
+	public static Profile calculateProfile(Environnement environnement, IFeatureCollection<IFeature> featCuboid) {
 		// Mandatory due to precision trunk in Geoxygene core
 		DirectPosition.PRECISION = 10;
-
-		
 
 		IFeatureCollection<IFeature> transformeRoad = new FT_FeatureCollection<>();
 
@@ -125,7 +123,7 @@ public class SimulateAndCalcProfile {
 		profile.loadData();
 
 		// This lines allows the visualisation of the scene
-		//profile.display();
+		// profile.display();
 
 		// Calculation of the profilLe
 		// The results may be acccessible by getPproj method
@@ -138,10 +136,10 @@ public class SimulateAndCalcProfile {
 		profile.process();
 
 		// Update in the visualisation if available
-		//profile.updateDisplay();
+		// profile.updateDisplay();
 
 		// Point export
-		//profile.exportPoints(folderOut + "pointout.shp");
+		// profile.exportPoints(folderOut + "pointout.shp");
 
 		return profile;
 
