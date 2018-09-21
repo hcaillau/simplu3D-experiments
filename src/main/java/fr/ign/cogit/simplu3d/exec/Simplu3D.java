@@ -59,7 +59,7 @@ public class Simplu3D {
   public static void main(String[] args) throws Exception {
     ConstantRepresentation.backGroundColor = new Color(156, 180, 193);
 
-    String fileName = "building_parameters_project_expthese_3.xml";
+    String fileName = "building_parameters_project_expthese_3.json";
 
     Parameters p = Parameters.unmarshall(new File(folder + fileName));
 

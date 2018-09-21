@@ -33,7 +33,7 @@ public class Simulator {
 		int nbMaxBox = 2;
 
 		// On charge le fichier de configuration (cf regarder à l'intérieur)
-		String fileName = "parameters.xml";
+		String fileName = "parameters.json";
 		SimpluParameters p = new SimpluParametersJSON(new File(folder + fileName));
 
 		// On charge l'environnement géographique

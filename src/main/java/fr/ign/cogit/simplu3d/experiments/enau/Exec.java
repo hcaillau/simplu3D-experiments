@@ -22,7 +22,7 @@ public class Exec {
 		// Chargement du fichier de configuration
 		String folderName = "C:/Users/mbrasebin/Desktop/Alia/";
 
-		String fileName = "building_parameters_project_expthese_3.xml";
+		String fileName = "building_parameters_project_expthese_3.json";
 
 		//CadastralParcelLoader.ATT_ID_PARC = "id_parcell";
 		AssignZ.DEFAULT_Z = 0;

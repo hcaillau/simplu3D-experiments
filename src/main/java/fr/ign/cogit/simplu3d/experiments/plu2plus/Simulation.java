@@ -29,7 +29,7 @@ public class Simulation {
 
 	public static void main(String[] args) throws Exception {
 		String folderName = "/home/mickael/data/mbrasebin/donnees/PLU2PLUS/Projet/";
-		String paramFile = folderName + "parameters_meylan.xml";
+		String paramFile = folderName + "parameters_meylan.json";
 
 		String pathEmprise = folderName + "temp_data/emprise_proj.shp";
 

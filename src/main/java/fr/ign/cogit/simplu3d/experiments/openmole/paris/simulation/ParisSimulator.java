@@ -15,6 +15,8 @@ import fr.ign.cogit.simplu3d.model.Environnement;
 import fr.ign.cogit.simplu3d.rjmcmc.cuboid.geometry.impl.Cuboid;
 import fr.ign.cogit.simplu3d.rjmcmc.cuboid.optimizer.cuboid.OptimisedBuildingsCuboidFinalDirectRejection;
 import fr.ign.cogit.simplu3d.util.AssignZ;
+import fr.ign.cogit.simplu3d.util.SimpluParameters;
+import fr.ign.cogit.simplu3d.util.SimpluParametersJSON;
 import fr.ign.mpp.configuration.BirthDeathModification;
 import fr.ign.mpp.configuration.GraphConfiguration;
 import fr.ign.mpp.configuration.GraphVertex;
@@ -31,8 +33,8 @@ public class ParisSimulator {
 		String shapefileOut = "/tmp/tmp/simulation.shp";
 
 		// Scenario file name in folderName folder
-		String scenarioName = "scenario.xml";
-		Parameters p = Parameters.unmarshall(new File(folderName + scenarioName));
+		String scenarioName = "scenariotest.json";
+		SimpluParameters p = new SimpluParametersJSON(new File(folderName + scenarioName));
 
 		// Z by default
 		AssignZ.DEFAULT_Z = 36;
@@ -44,7 +46,7 @@ public class ParisSimulator {
 		// The results will be stored in this list
 		IFeatureCollection<IFeature> iFeatC = new FT_FeatureCollection<>();
 		for (BasicPropertyUnit bPU : env.getBpU()) {
-			
+
 			
 			//If the parcel has not to be simulated (attribute simulate) we continue
 			if (!bPU.getCadastralParcels().get(0).hasToBeSimulated()) {

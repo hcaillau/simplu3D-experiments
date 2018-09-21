@@ -125,7 +125,7 @@ public class BasicParametricShapeSimulator {
 			case CUBOID:
 				SamplePredicate<Cuboid, GraphConfiguration<Cuboid>, BirthDeathModification<Cuboid>> pred = null;
 
-				String fileName = "building_parameters_project_trapezoid_4.xml";
+				String fileName = "building_parameters_project_trapezoid_4.json";
 
 				p = new SimpluParametersJSON(new File(folderName + fileName));
 
@@ -146,7 +146,7 @@ public class BasicParametricShapeSimulator {
 				// On indique le fichier de configuration (à créer ou utiliser
 				// un
 				// existant)
-				String fileName2 = "building_parameters_project_lshape.xml";
+				String fileName2 = "building_parameters_project_lshape.json";
 				// On charge le fichier de configuration
 				p = new SimpluParametersJSON(new File(folderName + fileName2));
 				// On instancie le prédicat (vérification des règles,
@@ -163,7 +163,7 @@ public class BasicParametricShapeSimulator {
 				break;
 			case TRAPEZOID:
 
-				String fileName3 = "building_parameters_project_trapezoid_4.xml";
+				String fileName3 = "building_parameters_project_trapezoid_4.json";
 
 				p = new SimpluParametersJSON(new File(folderName + fileName3));
 
@@ -184,7 +184,7 @@ public class BasicParametricShapeSimulator {
 				// On indique le fichier de configuration (à créer ou utiliser
 				// un
 				// existant)
-				String fileName4 = "building_parameters_project_rcuboid.xml";
+				String fileName4 = "building_parameters_project_rcuboid.json";
 				// On charge le fichier de configuration
 				p = new SimpluParametersJSON(new File(folderName + fileName4));
 				// On instancie le prédicat (vérification des règles,

@@ -32,7 +32,7 @@ public class SimulateAndCalcProfile {
 		// Loading of configuration file that contains sampling space
 		// information and simulated annealing configuration
 		String folderName = BasicSimulator.class.getClassLoader().getResource("scenario/").getPath();
-		String fileName = "building_parameters_project_expthese_3.xml";
+		String fileName = "building_parameters_project_expthese_3.json";
 		SimpluParameters p = new SimpluParametersJSON(new File(folderName + fileName));
 
 		// Load default environment (data are in resource directory)

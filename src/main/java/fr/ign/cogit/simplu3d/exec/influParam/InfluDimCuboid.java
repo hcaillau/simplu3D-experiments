@@ -53,7 +53,7 @@ public class InfluDimCuboid {
 
 		String folderName = "./src/main/resources/scenario/";
 
-		String fileName = "building_parameters_project_expthese_1_maison.xml";
+		String fileName = "building_parameters_project_expthese_3.json";
 
 		SimpluParameters p = new SimpluParametersJSON(new File(folderName + fileName));
 

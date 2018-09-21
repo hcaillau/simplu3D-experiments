@@ -51,7 +51,7 @@ public class ShapeFileExperimentation {
     // Chargement du fichier de configuration
     String folderName = BasicSimulator.class.getClassLoader()
         .getResource("scenario/").getPath();
-    String fileName = "building_parameters_project_expthese_3.xml";
+    String fileName = "building_parameters_project_expthese_3.json";
 
     SimpluParameters p = new SimpluParametersJSON(new File(folderName + fileName));
     String folderSave = p.getString("result");

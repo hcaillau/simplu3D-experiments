@@ -48,7 +48,7 @@ public class InfluCoeffTemp {
 
 		String folderName = "./src/main/resources/scenario/";
 
-		String fileName = "building_parameters_project_expthese_1.xml";
+		String fileName = "building_parameters_project_expthese_3.json";
 
 		SimpluParameters p = new SimpluParametersJSON(new File(folderName + fileName));
 
