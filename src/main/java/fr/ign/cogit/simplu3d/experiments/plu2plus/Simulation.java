@@ -23,7 +23,6 @@ import fr.ign.cogit.simplu3d.util.SimpluParametersJSON;
 import fr.ign.mpp.configuration.BirthDeathModification;
 import fr.ign.mpp.configuration.GraphConfiguration;
 import fr.ign.mpp.configuration.GraphVertex;
-import fr.ign.parameters.Parameters;
 
 public class Simulation {
 
@@ -42,8 +41,6 @@ public class Simulation {
 		IFeatureCollection<IFeature> featC = new FT_FeatureCollection<>();
 
 		for (BasicPropertyUnit bPU : env.getBpU()) {
-			
-	
 
 			if (featForbiddenZone.getGeom().intersects(bPU.getPol2D())) {
 
@@ -56,7 +53,8 @@ public class Simulation {
 
 	}
 
-	public static IFeatureCollection<IFeature> simulateBPU(Environnement env, SimpluParameters p, BasicPropertyUnit bPU) {
+	public static IFeatureCollection<IFeature> simulateBPU(Environnement env, SimpluParameters p,
+			BasicPropertyUnit bPU) {
 
 		// Instantiation of the sampler
 		OptimisedBuildingsCuboidFinalDirectRejection oCB = new OptimisedBuildingsCuboidFinalDirectRejection();
