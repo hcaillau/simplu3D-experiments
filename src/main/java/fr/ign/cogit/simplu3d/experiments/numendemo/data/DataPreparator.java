@@ -1,10 +1,6 @@
 package fr.ign.cogit.simplu3d.experiments.numendemo.data;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,14 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
@@ -30,15 +22,17 @@ public class DataPreparator {
 
 	public static void main(String[] args) throws Exception {
 		// File in
-		String fileIn = "/home/mbrasebin/Documents/Donnees/demo-numen/municipality/61230/parcelle.shp"; // parcelle.json
+		String fileIn = "/home/mbrasebin/Documents/Donnees/demo-numen/municipality/61230/parcelle.json"; // parcelle.json
 
 		// Folder where results are stored
 		String folderOut = "/home/mbrasebin/Documents/Donnees/demo-numen/municipality/61230/out/";
 
-		// IFeatureCollection<IFeature> collectionParcels = readJSONFile(fileIn);
-
 		// Reading the features
-		IFeatureCollection<IFeature> collectionParcels = ShapefileReader.read(fileIn);
+
+		IFeatureCollection<IFeature> collectionParcels = DefaultFeatureDeserializer.readJSONFile(fileIn);
+
+		// IFeatureCollection<IFeature> collectionParcels =
+		// ShapefileReader.read(fileIn);
 
 		// A temporary collection to store the agregated results
 		IFeatureCollection<IFeature> collToExport = new FT_FeatureCollection<>();
@@ -59,24 +53,7 @@ public class DataPreparator {
 		exportFolder(map, folderOut);
 
 		// Storing the agregated results
-		ShapefileWriter.write(collToExport, folderOut + "agregated.shp");
-
-	}
-
-	public static IFeatureCollection<IFeature> readJSONFile(String file) throws Exception {
-
-		InputStream intputSream = new FileInputStream(file);
-
-		Reader reader = new InputStreamReader(intputSream, "UTF-8");
-		// System.out.println(IOUtils.toString(is)
-
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(IFeatureCollection.class, new DefaultFeatureDeserializer());
-		Gson gson = gsonBuilder.create();
-
-		IFeatureCollection<IFeature> featureCollection = gson.fromJson(reader, IFeatureCollection.class);
-
-		return featureCollection;
+		ShapefileWriter.write(collToExport, folderOut + "agregated_2.shp");
 
 	}
 
