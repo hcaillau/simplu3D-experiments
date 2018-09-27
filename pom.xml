@@ -316,6 +316,11 @@
 			<artifactId>simplu3d</artifactId>
 			<version>${simplu3d.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fr.ign.cogit</groupId>
+			<artifactId>simplu3d-iauidf</artifactId>
+			<version>${simplu3d.version}</version>
+		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
