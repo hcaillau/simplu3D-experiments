@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
@@ -18,7 +22,11 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 public class DataPreparator {
 
 	public final static String ATTRIBUTE_NAME_GROUP = "id_block";
+	
+	
+	//IDPAR is used during simulation
 	public final static String ATTRIBUTE_NAME_ID = "IDPAR";
+
 
 	public static void main(String[] args) throws Exception {
 		// File in
@@ -53,7 +61,7 @@ public class DataPreparator {
 		exportFolder(map, folderOut);
 
 		// Storing the agregated results
-		ShapefileWriter.write(collToExport, folderOut + "agregated_2.shp");
+		ShapefileWriter.write(collToExport, folderOut + "agregated_2.shp", CRS.decode(DefaultFeatureDeserializer.SRID_END));
 
 	}
 
@@ -130,7 +138,15 @@ public class DataPreparator {
 		// We create the folder and store the collection
 		File f = new File(path);
 		f.mkdirs();
-		ShapefileWriter.write(features, path + "parcelle.shp");
+		try {
+			ShapefileWriter.write(features, path + "parcelle.shp", CRS.decode(DefaultFeatureDeserializer.SRID_END));
+		} catch (NoSuchAuthorityCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FactoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static int getIDBlock(IFeature x) {

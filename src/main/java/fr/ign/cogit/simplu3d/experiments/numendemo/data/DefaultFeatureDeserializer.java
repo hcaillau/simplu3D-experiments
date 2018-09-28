@@ -8,6 +8,11 @@ import java.lang.reflect.Type;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -24,6 +29,7 @@ import com.vividsolutions.jts.io.geojson.GeoJsonReader;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.datatools.CRSConversion;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
@@ -39,6 +45,10 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  *
  */
 public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureCollection<IFeature>> {
+	
+	
+	public final static String SRID_INI ="urn:ogc:def:crs:EPSG::4326";
+	public final static String SRID_END ="EPSG:2154";
 
 	public static void main(String[] args) throws Exception {
 		// Transform a json file to a shapefile
@@ -202,7 +212,16 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 	//We convert the geometry with JTS jsonreader
 	private IGeometry transformGeom(JsonElement value) throws Exception {
 		Geometry geom = jsonReader.read(value.toString());
-		return AdapterFactory.toGM_Object(geom);
+
+		CoordinateReferenceSystem sourceCRS = CRS.decode(SRID_INI);
+		CoordinateReferenceSystem targetCRS = CRS.decode(SRID_END);
+	
+		IGeometry targetGeometry = CRSConversion.changeCRS(geom, sourceCRS, targetCRS);
+		/*
+		MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS);
+		Geometry targetGeometry = JTS.transform( geom, transform);*/
+
+		return targetGeometry;
 	}
 	
 	//We generate the attributes
