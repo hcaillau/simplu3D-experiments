@@ -8,10 +8,8 @@ import java.lang.reflect.Type;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.geojson.GeoJsonReader;
@@ -33,7 +32,6 @@ import fr.ign.cogit.geoxygene.datatools.CRSConversion;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
-import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
 /**
@@ -45,10 +43,11 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  *
  */
 public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureCollection<IFeature>> {
-	
-	
-	public final static String SRID_INI ="urn:ogc:def:crs:EPSG::4326";
-	public final static String SRID_END ="EPSG:2154";
+
+	//The input/output SRID
+	//A reprojection is proceeded during the conversion
+	public final static String SRID_INI = "urn:ogc:def:crs:EPSG::4326";
+	public final static String SRID_END = "EPSG:2154";
 
 	public static void main(String[] args) throws Exception {
 		// Transform a json file to a shapefile
@@ -119,7 +118,6 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 					featColl.addAll(featCollTemp);
 				}
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -164,7 +162,7 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 			DefaultFeature feat = new DefaultFeature();
 
 			if (e instanceof JsonObject) {
-
+				//We create a feature for each entry
 				transformToFeature((JsonObject) e, feat);
 				featCollection.add(feat);
 			} else {
@@ -178,7 +176,7 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 	public DefaultFeature transformToFeature(JsonObject jsonPrim, DefaultFeature feat) throws Exception {
 
 		for (Entry<String, JsonElement> e : jsonPrim.entrySet()) {
-			//4 items at this level
+			// 4 items at this level
 			// properties
 			// type
 			// id
@@ -209,43 +207,57 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 
 	private static GeoJsonReader jsonReader = new GeoJsonReader(new GeometryFactory());
 
-	//We convert the geometry with JTS jsonreader
+	// We convert the geometry with JTS jsonreader
 	private IGeometry transformGeom(JsonElement value) throws Exception {
 		Geometry geom = jsonReader.read(value.toString());
 
 		CoordinateReferenceSystem sourceCRS = CRS.decode(SRID_INI);
 		CoordinateReferenceSystem targetCRS = CRS.decode(SRID_END);
-	
+
 		IGeometry targetGeometry = CRSConversion.changeCRS(geom, sourceCRS, targetCRS);
-		/*
-		MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS);
-		Geometry targetGeometry = JTS.transform( geom, transform);*/
 
 		return targetGeometry;
 	}
-	
-	//We generate the attributes
+
+	// We generate the attributes
 	public void generateProperties(JsonElement properties, DefaultFeature feat) {
 		JsonObject jsonPrim = (JsonObject) properties;
 		for (Entry<String, JsonElement> e : jsonPrim.entrySet()) {
 			JsonElement element = e.getValue();
 			if (element instanceof JsonNull) {
 				AttributeManager.addAttribute(feat, e.getKey(), "", "String");
-			} else {
-				String value = e.getValue().toString();
-				//Remove the "
+			} else if (element instanceof JsonPrimitive) {
 
-				value = value.replaceAll("\"", "");
-				
-				// All double must be positive (notably to turn -88 and -99 into 88 and 99
-				try {
-					double d = Double.parseDouble(value);
-					d = Math.abs(d);
-					value = d + "";
-				} catch (Exception exx) {
+				JsonPrimitive primitive = (JsonPrimitive) element;
 
+				//If the primitive is a number we store it as an Integer or Double
+				if (primitive.isNumber()) {
+					try {
+
+						int value = primitive.getAsInt();
+						AttributeManager.addAttribute(feat, e.getKey(), Math.abs(value), "Integer");
+
+					} catch (Exception e2) {
+						double value = primitive.getAsDouble();
+						AttributeManager.addAttribute(feat, e.getKey(), Math.abs(value), "Double");
+
+					}
+
+				} else {
+					//If it is a string, we remove the "
+					String value = e.getValue().toString();
+					value = value.replaceAll("\"", "");
+
+					AttributeManager.addAttribute(feat, e.getKey(), value, "String");
 				}
+
+			}else {
+				//If it is an other type of attribute we store it as a String
+				String value = e.getValue().toString();
+				value = value.replaceAll("\"", "");
+
 				AttributeManager.addAttribute(feat, e.getKey(), value, "String");
+	
 			}
 
 		}
