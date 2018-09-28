@@ -1,8 +1,8 @@
-package fr.ign.cogit.simplu3d.experiments.numendemo.simulator;
+package fr.ign.cogit.simplu3d.experiments.smartplu.simulator;
 
 import java.io.File;
 
-import fr.ign.cogit.simplu3d.experiments.numendemo.data.DataPreparator;
+import fr.ign.cogit.simplu3d.experiments.smartplu.data.DataPreparator;
 import fr.ign.cogit.simplu3d.io.feature.AttribNames;
 import fr.ign.simplu3d.iauidf.openmole.EPFIFTask;
 import fr.ign.simplu3d.iauidf.tool.ParcelAttributeTransfert;

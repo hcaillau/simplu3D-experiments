@@ -1,4 +1,4 @@
-package fr.ign.cogit.simplu3d.experiments.numendemo.data;
+package fr.ign.cogit.simplu3d.experiments.smartplu.data;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
