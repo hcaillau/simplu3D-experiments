@@ -1,4 +1,4 @@
-# simplu3d-experiments
+# Simplu3D-experiments
 
 [![Build Status](https://travis-ci.org/SimPLU3D/simplu3D-experiments.svg?branch=master)](https://travis-ci.org/SimPLU3D/simplu3D-experiments)
 
