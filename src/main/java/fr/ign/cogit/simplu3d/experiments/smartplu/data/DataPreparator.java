@@ -80,6 +80,28 @@ public class DataPreparator {
 
 		// Creating the folder
 		exportFolder(map, folderOut);
+		
+		
+		/////////////////////////////////////////////////////////////////////
+		//This code is not useful for a final production and for simulation as it only proposes an aggregated export
+		//WARNING !!!!!!!!!
+		//Do not forget to remove the aggregated.shp from out folder 
+		//If you want to run simulation
+		/////////////////////////////
+		
+		
+		// This hint is to ensure that the first item has rules
+		// Because the schema of the shapefile export is based on the schema of the
+		// first feature
+		int nbElem = collToExport.size();
+		for (int i = 0; i < nbElem; i++) {
+			IFeature feat = collToExport.get(i);
+			if (feat.getAttribute("DOCUMENT") != null) {
+				collToExport.remove(i);
+				collToExport.getElements().add(0, feat);
+				break;
+			}
+		}
 
 		// Storing the agregated results (only for debug and to check if the blocks are
 		// correctly generated)
@@ -193,6 +215,21 @@ public class DataPreparator {
 	 */
 	public static void createFolderAndExport(String path, IFeatureCollection<IFeature> features) {
 		// We create the folder and store the collection
+		
+		// This hint is to ensure that the first item has rules
+		// Because the schema of the shapefile export is based on the schema of the
+		// first feature
+		int nbElem = features.size();
+		for (int i = 0; i < nbElem; i++) {
+			IFeature feat = features.get(i);
+			if (feat.getAttribute("DOCUMENT") != null) {
+				features.remove(i);
+				features.getElements().add(0, feat);
+				break;
+			}
+		}
+
+		
 		File f = new File(path);
 		f.mkdirs();
 		try {

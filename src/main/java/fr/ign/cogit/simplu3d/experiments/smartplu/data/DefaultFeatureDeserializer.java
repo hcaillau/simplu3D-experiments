@@ -84,20 +84,7 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 
 		IFeatureCollection<IFeature> featureCollection = gson.fromJson(reader, IFeatureCollection.class);
 
-		// This hint is to ensure that the first item has rules
-		// Because the schema of the shapefile export is based on the schema of the
-		// first feature
-		int nbElem = featureCollection.size();
-		for (int i = 0; i < nbElem; i++) {
-			IFeature feat = featureCollection.get(i);
-			if (feat.getAttribute("DOCUMENT") != null) {
-				featureCollection.remove(i);
-				featureCollection.getElements().add(0, feat);
-				break;
-			}
-		}
-
-		System.out.println("Number of parcels : " + nbElem);
+		System.out.println("Number of parcels : " + featureCollection.size());
 
 		return featureCollection;
 
