@@ -46,11 +46,17 @@ public class DataPreparator {
 	public final static String ATTRIBUTE_NAME_BAND = "B1_T_BANDE";
 
 	public static void main(String[] args) throws Exception {
+		
+		if(args.length < 2) {
+			System.out.println("Two arguments expected : parcelle.json and folderOut");
+		}
 		// File in
-		String fileIn = "/home/mbrasebin/Documents/Donnees/demo-numen/municipality/61230/parcelle.json";
+		//"/home/mbrasebin/Documents/Donnees/demo-numen/municipality/61230/parcelle.json";
+		String fileIn = args[0];
 
 		// Folder where results are stored
-		String folderOut = "/home/mbrasebin/Documents/Donnees/demo-numen/municipality/61230/out/";
+		//"/home/mbrasebin/Documents/Donnees/demo-numen/municipality/61230/out/";
+		String folderOut =  args[1];
 
 		// Reading the features
 		IFeatureCollection<IFeature> collectionParcels = DefaultFeatureDeserializer.readJSONFile(fileIn);
@@ -202,6 +208,8 @@ public class DataPreparator {
 	 * @param folderIn
 	 */
 	public static void exportFolder(Map<Integer, IFeatureCollection<IFeature>> map, String folderIn) {
+		
+		(new File(folderIn)).mkdirs();
 		// For each key we create a folder with associated features
 		map.keySet().parallelStream().forEach(x -> createFolderAndExport(folderIn + x + "/", map.get(x)));
 	}
@@ -213,7 +221,7 @@ public class DataPreparator {
 	 * @param path
 	 * @param features
 	 */
-	public static void createFolderAndExport(String path, IFeatureCollection<IFeature> features) {
+	private static void createFolderAndExport(String path, IFeatureCollection<IFeature> features) {
 		// We create the folder and store the collection
 		
 		// This hint is to ensure that the first item has rules
