@@ -44,8 +44,8 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  */
 public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureCollection<IFeature>> {
 
-	//The input/output SRID
-	//A reprojection is proceeded during the conversion
+	// The input/output SRID
+	// A reprojection is proceeded during the conversion
 	public final static String SRID_INI = "urn:ogc:def:crs:EPSG::4326";
 	public final static String SRID_END = "EPSG:2154";
 
@@ -149,7 +149,7 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 			DefaultFeature feat = new DefaultFeature();
 
 			if (e instanceof JsonObject) {
-				//We create a feature for each entry
+				// We create a feature for each entry
 				transformToFeature((JsonObject) e, feat);
 				featCollection.add(feat);
 			} else {
@@ -217,7 +217,7 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 
 				JsonPrimitive primitive = (JsonPrimitive) element;
 
-				//If the primitive is a number we store it as an Integer or Double
+				// If the primitive is a number we store it as an Integer or Double
 				if (primitive.isNumber()) {
 					try {
 
@@ -231,20 +231,35 @@ public class DefaultFeatureDeserializer implements JsonDeserializer<IFeatureColl
 					}
 
 				} else {
-					//If it is a string, we remove the "
+					// If it is a string, we remove the "
 					String value = e.getValue().toString();
 					value = value.replaceAll("\"", "");
 
-					AttributeManager.addAttribute(feat, e.getKey(), value, "String");
+					try {
+
+						int valueInt = Integer.parseInt(value);
+						AttributeManager.addAttribute(feat, e.getKey(), Math.abs(valueInt), "Integer");
+
+					} catch (Exception e2) {
+
+						try {
+							double valueDouble = primitive.getAsDouble();
+							AttributeManager.addAttribute(feat, e.getKey(), Math.abs(valueDouble), "Double");
+						} catch (Exception e3) {
+
+							AttributeManager.addAttribute(feat, e.getKey(), value, "String");
+						}
+					}
+
 				}
 
-			}else {
-				//If it is an other type of attribute we store it as a String
+			} else {
+				// If it is an other type of attribute we store it as a String
 				String value = e.getValue().toString();
 				value = value.replaceAll("\"", "");
 
 				AttributeManager.addAttribute(feat, e.getKey(), value, "String");
-	
+
 			}
 
 		}
