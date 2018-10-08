@@ -331,16 +331,21 @@ public class DataPreparator {
 		}
 
 		Collection<IFeature> featCollSelect = featCollTotal.select(featColl.getGeomAggregate().buffer(0.5));
+		
+		IFeatureCollection<IFeature> finalFeatColl = new FT_FeatureCollection<>();
 
 		for (IFeature feat : featCollSelect) {
+			IFeature cloned = feat.cloneGeom();
+			finalFeatColl.add(cloned);
+
 			if (featColl.contains(feat)) {
+
 				continue;
 			}
 
-			IFeature cloned = feat.cloneGeom();
+			//It is a new context feature we add a false attribute
 			AttributeManager.addAttribute(cloned, ATT_SIMUL, "false", "String");
-			featColl.add(cloned);
-
+		
 		}
 
 		return featColl;
