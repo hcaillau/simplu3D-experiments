@@ -18,11 +18,13 @@ import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.calculation.parcelDecomposition.OBBBlockDecomposition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.util.attribute.AttributeManager;
+import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
@@ -69,17 +71,53 @@ public class DataPreparator {
 		String folderOut = args[1];
 
 		// Reading the features
-		IFeatureCollection<IFeature> collectionParcels = DefaultFeatureDeserializer.readJSONFile(fileIn);
+		IFeatureCollection<IFeature> collectionParcels = null;
+		
+		
+		(new File(folderOut)).mkdirs();
+		
+		
+		if(fileIn.contains(".json")) {
+			collectionParcels = DefaultFeatureDeserializer.readJSONFile(fileIn);
 
-		// If we want to use a shapefile instead (data has to be in Lambert93)
-		// IFeatureCollection<IFeature> collectionParcels =
-		// ShapefileReader.read(fileIn);
 
-		// A temporary collection to store the agregated results
-		IFeatureCollection<IFeature> collToExport = new FT_FeatureCollection<>();
-		collToExport.addAll(collectionParcels);
+			// A temporary collection to store the agregated results
+			IFeatureCollection<IFeature> collToExport = new FT_FeatureCollection<>();
+			collToExport.addAll(collectionParcels);
+			
+			// This hint is to ensure that the first item has rules
+			// Because the schema of the shapefile export is based on the schema of the
+			// first feature
+			int nbElem = collToExport.size();
+			for (int i = 0; i < nbElem; i++) {
+				IFeature feat = collToExport.get(i);
+				if (Boolean.parseBoolean(feat.getAttribute(ATT_SIMUL).toString())) {
+					collToExport.remove(i);
+					collToExport.getElements().add(0, feat);
+					break;
+				}
+			}
 
-		//
+			
+			// Storing the agregated results (only for debug and to check if the blocks are
+			// correctly generated)
+			String agregatedFile = folderOut + "agregated.shp";
+			ShapefileWriter.write(collToExport,agregatedFile ,
+					CRS.decode(DefaultFeatureDeserializer.SRID_END));
+			collectionParcels =
+					 ShapefileReader.read(agregatedFile);
+			
+			
+		}else {
+			// If we want to use a shapefile instead (data has to be in Lambert93)
+			collectionParcels =
+			 ShapefileReader.read(fileIn);
+		}
+		
+		
+	
+
+		
 		int numberOfParcels = 20;
 		double areaMax = 5000;
 
@@ -114,23 +152,8 @@ public class DataPreparator {
 		// If you want to run simulation
 		/////////////////////////////
 
-		// This hint is to ensure that the first item has rules
-		// Because the schema of the shapefile export is based on the schema of the
-		// first feature
-		int nbElem = collToExport.size();
-		for (int i = 0; i < nbElem; i++) {
-			IFeature feat = collToExport.get(i);
-			if (Boolean.parseBoolean(feat.getAttribute(ATT_SIMUL).toString())) {
-				collToExport.remove(i);
-				collToExport.getElements().add(0, feat);
-				break;
-			}
-		}
 
-		// Storing the agregated results (only for debug and to check if the blocks are
-		// correctly generated)
-		ShapefileWriter.write(collToExport, folderOut + "agregated.shp",
-				CRS.decode(DefaultFeatureDeserializer.SRID_END));
+
 
 		// Export with double to get a fast view of the folders
 		IFeatureCollection<IFeature> exportWithDouble = new FT_FeatureCollection<>();
@@ -174,7 +197,7 @@ public class DataPreparator {
 			// We get the first parcel and removes it from the list
 			IFeature currentParcel = parcelles.get(0);
 			parcelles.remove(0);
-			setIDBlock(currentParcel, idCurrentGroup);
+
 
 			// Step 1 : determining the parcel in the same block
 			// Collection that will contain a list of parcels in the same block
@@ -315,6 +338,7 @@ public class DataPreparator {
 		}
 
 		//The algo does not seem to work, we only but 1 feature in each collection
+		System.out.println("Going through this way");
 		collection1.add(featColl.get(0));
 		featColl.remove(0);
 		collection1.addAll(featColl);
@@ -329,26 +353,49 @@ public class DataPreparator {
 		if (!featCollTotal.hasSpatialIndex()) {
 			featCollTotal.initSpatialIndex(Tiling.class, false);
 		}
+		
 
-		Collection<IFeature> featCollSelect = featCollTotal.select(featColl.getGeomAggregate().buffer(0.5));
+		//InitialGeemetry
+		IDirectPositionList dpl = new DirectPositionList();
+		for (IFeature feat : featColl) {
+				dpl.addAll(feat.getGeom().coord());
+		}
+		IGeometry	area = new GM_MultiPoint(dpl);
+		
+
+		Collection<IFeature> featCollSelect = featCollTotal.select(area.buffer(0.5));
 		
 		IFeatureCollection<IFeature> finalFeatColl = new FT_FeatureCollection<>();
+		finalFeatColl.addAll(featColl);
 
 		for (IFeature feat : featCollSelect) {
-			IFeature cloned = feat.cloneGeom();
-			finalFeatColl.add(cloned);
-
+			
+			
 			if (featColl.contains(feat)) {
 
 				continue;
 			}
-
+			
+			DefaultFeature featureFakeClone = new DefaultFeature();
+			featureFakeClone.setGeom(feat.getGeom());
 			//It is a new context feature we add a false attribute
-			AttributeManager.addAttribute(cloned, ATT_SIMUL, "false", "String");
+			AttributeManager.addAttribute(featureFakeClone, ATTRIBUTE_NAME_ID, feat.getAttribute(ATTRIBUTE_NAME_ID), "String");
+			AttributeManager.addAttribute(featureFakeClone, ATT_SIMUL, "false", "String");
+			AttributeManager.addAttribute(featureFakeClone, ATTRIBUTE_NAME_BAND, 0, "Integer");			
+
+			
+			
+			
+			finalFeatColl.add(featureFakeClone);
+
+		
+			
+		
+	
 		
 		}
 
-		return featColl;
+		return finalFeatColl;
 	}
 
 	/**
