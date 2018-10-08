@@ -50,9 +50,9 @@ public class ParcelSplitting {
 			IPolygon pol = (IPolygon) FromGeomToSurface.convertGeom(feat.getGeom()).get(0);
 
 			OBBBlockDecomposition obb = new OBBBlockDecomposition(pol, maximalArea, maximalWidth, Random.random(),
-					roadEpsilon, noise);
+					roadEpsilon);
 
-			IFeatureCollection<IFeature> featCollTemp = obb.decompParcel();
+			IFeatureCollection<IFeature> featCollTemp = obb.decompParcel(noise);
 
 			for (IFeature featNew : featCollTemp) {
 				IFeature featTemp = feat.cloneGeom();
