@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import fr.ign.cogit.simplu3d.experiments.smartplu.data.DataPreparator;
 import fr.ign.cogit.simplu3d.io.feature.AttribNames;
+import fr.ign.cogit.simplu3d.misc.Initialize;
 import fr.ign.simplu3d.iauidf.openmole.EPFIFTask;
 import fr.ign.simplu3d.iauidf.tool.ParcelAttributeTransfert;
 
@@ -20,6 +21,8 @@ import fr.ign.simplu3d.iauidf.tool.ParcelAttributeTransfert;
  */
 public class SmartPLUTaskRunner {
 	public static String run(File folder, String dirName, File folderOut, File parameterFile, long seed) {
+		
+		Initialize.init();
 		// We generate cuboid and not trapezoid
 		EPFIFTask.USE_DEMO_SAMPLER = false;
 		EPFIFTask.INTERSECTION = true;
