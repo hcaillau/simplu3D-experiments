@@ -42,6 +42,9 @@ public class Initialize {
 		// Register logging, and bridge to JAI logging
 		GeoTools.init((Hints) null);
 
+	
+		
+		
 		// Custom GeoTools ImagingListener used to ignore common warnings
 		JAI.getDefaultInstance().setImagingListener(new ImagingListener() {
 			final Logger LOGGER = Logging.getLogger("javax.media.jai");
@@ -75,6 +78,8 @@ public class Initialize {
 				return false;
 			}
 		});
+		
+		
 
 		// setup concurrent operation registry
 		JAI jaiDef = JAI.getDefaultInstance();
@@ -82,6 +87,8 @@ public class Initialize {
 				|| jaiDef.getOperationRegistry() instanceof it.geosolutions.jaiext.ConcurrentOperationRegistry)) {
 			jaiDef.setOperationRegistry(ConcurrentOperationRegistry.initializeRegistry());
 		}
+		
+		
 
 		// if the server admin did not set it up otherwise, force X/Y axis
 		// ordering
@@ -98,6 +105,7 @@ public class Initialize {
 
 		final Hints defHints = GeoTools.getDefaultHints();
 
+		
 		// Initialize GridCoverageFactory so that we don't make a lookup every time a
 		// factory is
 		// needed
@@ -113,12 +121,19 @@ public class Initialize {
 		// back up we should implement their better way of fixing the problem.
 		System.setProperty("java.util.prefs.syncInterval", "5000000");
 
+
 		// Fix issue with tomcat and JreMemoryLeakPreventionListener causing issues with
 		// IIORegistry leading to imageio plugins not being properly initialized
 //		System.out.println("scanForPlugins");
 		ImageIO.scanForPlugins();
+		
+
+	
 		IIORegistry registry = IIORegistry.getDefaultInstance();
-		printRegistry(registry);
+	
+		//printRegistry(registry);
+
+
 
 		// in any case, the native png reader is worse than the pure java ones, so
 		// let's disable it (the native png writer is on the other side faster)...
@@ -126,7 +141,7 @@ public class Initialize {
 		ImageIOExt.allowNativeCodec("png", ImageWriterSpi.class, true);
 
 //		System.out.println("allowNativeCodec");
-		printRegistry(registry);
+		//printRegistry(registry);
 
 		// remove the ImageIO JPEG200 readers/writes, they are outdated and not quite
 		// working
@@ -634,7 +649,7 @@ public class Initialize {
 		// registry.registerServiceProvider(new
 		// com.sun.media.jai.imageioimpl.ImageReadWriteSpi());
 		ReferencingFactoryFinder.addAuthorityFactory(new org.geotools.referencing.factory.epsg.ThreadedHsqlEpsgFactory());
-		printRegistry(registry);
+		//printRegistry(registry);
 
 		// new com.sun.media.imageio.stream.RawImageInputStream(arg0, arg1)
 		// com.sun.media.imageioimpl.common.ImageUtil

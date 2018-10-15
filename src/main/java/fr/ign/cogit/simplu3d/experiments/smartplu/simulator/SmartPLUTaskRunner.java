@@ -22,7 +22,9 @@ import fr.ign.simplu3d.iauidf.tool.ParcelAttributeTransfert;
 public class SmartPLUTaskRunner {
 	public static String run(File folder, String dirName, File folderOut, File parameterFile, long seed) {
 		
-		Initialize.init();
+	  Initialize.init();
+		
+	
 		// We generate cuboid and not trapezoid
 		EPFIFTask.USE_DEMO_SAMPLER = false;
 		EPFIFTask.INTERSECTION = true;
