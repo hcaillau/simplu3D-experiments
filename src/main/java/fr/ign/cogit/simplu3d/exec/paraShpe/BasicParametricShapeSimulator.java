@@ -3,8 +3,6 @@ package fr.ign.cogit.simplu3d.exec.paraShpe;
 import java.io.File;
 import java.util.List;
 
-import fr.ign.cogit.simplu3d.util.SimpluParameters;
-import fr.ign.cogit.simplu3d.util.SimpluParametersJSON;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -32,10 +30,11 @@ import fr.ign.cogit.simplu3d.rjmcmc.paramshp.optimizer.OptimisedLShapeDirectReje
 import fr.ign.cogit.simplu3d.rjmcmc.paramshp.optimizer.OptimisedRCuboidDirectRejection;
 import fr.ign.cogit.simplu3d.rjmcmc.trapezoid.geometry.ParallelTrapezoid2;
 import fr.ign.cogit.simplu3d.rjmcmc.trapezoid.optimizer.OptimisedParallelTrapezoidFinalDirectRejection;
+import fr.ign.cogit.simplu3d.util.SimpluParameters;
+import fr.ign.cogit.simplu3d.util.SimpluParametersJSON;
 import fr.ign.mpp.configuration.BirthDeathModification;
 import fr.ign.mpp.configuration.GraphConfiguration;
 import fr.ign.mpp.configuration.GraphVertex;
-import fr.ign.parameters.Parameters;
 import fr.ign.random.Random;
 
 /**
