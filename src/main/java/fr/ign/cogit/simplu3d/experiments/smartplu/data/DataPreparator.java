@@ -26,9 +26,10 @@ import fr.ign.cogit.simplu3d.util.distribution.ZonePackager;
 public class DataPreparator {
 
 	public static void main(String[] args) throws Exception {
-
+		//Attribute that indicates if we simul or not the parcel
 		ZonePackager.ATT_SIMUL = "has_rules";
-
+		
+		
 		if (args.length < 2) {
 			System.out.println("Two arguments expected : parcelle.json and folderOut");
 		}
@@ -46,6 +47,10 @@ public class DataPreparator {
 		(new File(folderOut)).mkdirs();
 
 		if (fileIn.contains(".json")) {
+			//We ensure that both SRID are the same (tranforming json files and writing output of the ZonePackager)
+			ZonePackager.SRID_END = DefaultFeatureDeserializer.SRID_END;
+			
+			
 			collectionParcels = DefaultFeatureDeserializer.readJSONFile(fileIn);
 
 			// A temporary collection to store the agregated results
@@ -126,7 +131,7 @@ public class DataPreparator {
 		// blocks are
 		// correctly generated)
 		ShapefileWriter.write(exportWithDouble, folderOut + "export_with_double.shp",
-				CRS.decode(DefaultFeatureDeserializer.SRID_END));
+				CRS.decode(ZonePackager.SRID_END));
 
 	}
 
