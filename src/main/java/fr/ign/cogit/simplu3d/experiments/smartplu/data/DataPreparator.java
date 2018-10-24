@@ -29,6 +29,16 @@ public class DataPreparator {
 		//Attribute that indicates if we simul or not the parcel
 		ZonePackager.ATT_SIMUL = "has_rules";
 		
+		//Mapping attributes to generate IDPAR (concatenation of these four attributes)
+		//In this case departement attribut is facultative as the commune attribute 
+		//already contains  the departement number
+		ZonePackager.ATT_DEPARTEMENT= "departement";
+		ZonePackager.ATT_COMMUNE = "commune";
+		ZonePackager.ATT_PREFIXE = "prefixe";
+		ZonePackager.ATT_SECTION = "section";
+		ZonePackager.ATT_NUMERO = "numero";
+		
+	
 		
 		if (args.length < 2) {
 			System.out.println("Two arguments expected : parcelle.json and folderOut");
