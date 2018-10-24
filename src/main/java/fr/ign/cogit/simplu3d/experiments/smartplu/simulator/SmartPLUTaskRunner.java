@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import fr.ign.cogit.simplu3d.experiments.smartplu.data.DataPreparator;
 import fr.ign.cogit.simplu3d.io.feature.AttribNames;
 import fr.ign.cogit.simplu3d.misc.Initialize;
+import fr.ign.cogit.simplu3d.util.distribution.ZonePackager;
 import fr.ign.simplu3d.iauidf.openmole.EPFIFTask;
 import fr.ign.simplu3d.iauidf.tool.ParcelAttributeTransfert;
 
@@ -21,10 +21,9 @@ import fr.ign.simplu3d.iauidf.tool.ParcelAttributeTransfert;
  */
 public class SmartPLUTaskRunner {
 	public static String run(File folder, String dirName, File folderOut, File parameterFile, long seed) {
-		
-	  Initialize.init();
-		
-	
+
+		Initialize.init();
+
 		// We generate cuboid and not trapezoid
 		EPFIFTask.USE_DEMO_SAMPLER = false;
 		EPFIFTask.INTERSECTION = true;
@@ -38,16 +37,36 @@ public class SmartPLUTaskRunner {
 		// Note used attributes
 		ParcelAttributeTransfert.att_libelle_zone = "libelle";
 		ParcelAttributeTransfert.att_insee = "insee";
-		ParcelAttributeTransfert.att_libelle_de_base = "libelle"; // same attribute used 2 times
-		ParcelAttributeTransfert.att_libelle_de_dul = "libelle"; // same attribute used 2 times
-		ParcelAttributeTransfert.att_fonctions = "destdomi"; // same attribute used 2 times
-		ParcelAttributeTransfert.att_top_zac = DataPreparator.ATTRIBUTE_NAME_BAND; // Random attribute
-		ParcelAttributeTransfert.att_zonage_coherent = DataPreparator.ATTRIBUTE_NAME_BAND; // Random attribute
-		ParcelAttributeTransfert.att_correction_zonage = DataPreparator.ATTRIBUTE_NAME_BAND; // Random attribute
+		ParcelAttributeTransfert.att_libelle_de_base = "libelle"; // same
+																	// attribute
+																	// used 2
+																	// times
+		ParcelAttributeTransfert.att_libelle_de_dul = "libelle"; // same
+																	// attribute
+																	// used 2
+																	// times
+		ParcelAttributeTransfert.att_fonctions = "destdomi"; // same attribute
+																// used 2 times
+		ParcelAttributeTransfert.att_top_zac = ZonePackager.ATTRIBUTE_NAME_BAND; // Random
+																					// attribute
+		ParcelAttributeTransfert.att_zonage_coherent = ZonePackager.ATTRIBUTE_NAME_BAND; // Random
+																							// attribute
+		ParcelAttributeTransfert.att_correction_zonage = ZonePackager.ATTRIBUTE_NAME_BAND; // Random
+																							// attribute
 
 		// Used attributes
-		ParcelAttributeTransfert.att_typ_bande = DataPreparator.ATTRIBUTE_NAME_BAND; // Random attribute with 0 as value
-		ParcelAttributeTransfert.att_bande = DataPreparator.ATTRIBUTE_NAME_BAND; // Random attribute with 0 as value
+		ParcelAttributeTransfert.att_typ_bande = ZonePackager.ATTRIBUTE_NAME_BAND; // Random
+																					// attribute
+																					// with
+																					// 0
+																					// as
+																					// value
+		ParcelAttributeTransfert.att_bande = ZonePackager.ATTRIBUTE_NAME_BAND; // Random
+																				// attribute
+																				// with
+																				// 0
+																				// as
+																				// value
 		ParcelAttributeTransfert.att_art_5 = "B1_ART_5";
 		ParcelAttributeTransfert.att_art_6 = "B1_ART_6";
 		ParcelAttributeTransfert.att_art_71 = "B1_ART_71";
@@ -62,7 +81,7 @@ public class SmartPLUTaskRunner {
 		ParcelAttributeTransfert.att_art_10_top = "B1_ART_10";
 		ParcelAttributeTransfert.att_art_13 = "B1_ART_13";
 		ParcelAttributeTransfert.att_art_14 = "B1_ART_14";
-		AttribNames.setATT_CODE_PARC(DataPreparator.ATTRIBUTE_NAME_ID);
+		AttribNames.setATT_CODE_PARC(ZonePackager.ATTRIBUTE_NAME_ID);
 
 		String imu = dirName;
 
@@ -85,7 +104,7 @@ public class SmartPLUTaskRunner {
 	}
 
 	public static void main(String[] args) {
-		
+
 		int nbMinimalNumberOfArguments = 4;
 
 		if (args.length < nbMinimalNumberOfArguments) {
@@ -100,7 +119,7 @@ public class SmartPLUTaskRunner {
 		String numrep = args[1]; // "22";
 
 		if (args.length > nbMinimalNumberOfArguments) {
-			//If have more attributes, adding to inclusion list
+			// If have more attributes, adding to inclusion list
 			String[] argsDim = Arrays.copyOfRange(args, nbMinimalNumberOfArguments, args.length);
 			EPFIFTask.inclusion_list.addAll(new ArrayList<>(Arrays.asList(argsDim)));
 		}
@@ -109,9 +128,8 @@ public class SmartPLUTaskRunner {
 		File folderOut = new File(args[2] + numrep + "/");
 		// The parameters file
 		File parameterFile = new File(args[3]);
-		//"/home/mbrasebin/Documents/Donnees/IAUIDF/Input/Input1/dep_94_connected_openmole/dataBasicSimu/scenario/parameters_iauidf.json"
-		
-		
+		// "/home/mbrasebin/Documents/Donnees/IAUIDF/Input/Input1/dep_94_connected_openmole/dataBasicSimu/scenario/parameters_iauidf.json"
+
 		File folder = new File(foldName + numrep + "/");
 		long seed = 42L;
 		String res = "";
