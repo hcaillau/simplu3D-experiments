@@ -27,16 +27,16 @@ public class DataPreparator {
 
 	public static void main(String[] args) throws Exception {
 		//Attribute that indicates if we simul or not the parcel
-		ZonePackager.ATT_SIMUL = "has_rules";
+		ZonePackager.ATTRIBUTE_SIMUL = "has_rules";
 		
 		//Mapping attributes to generate IDPAR (concatenation of these four attributes)
 		//In this case departement attribut is facultative as the commune attribute 
 		//already contains  the departement number
-		ZonePackager.ATT_DEPARTEMENT= "departement";
-		ZonePackager.ATT_COMMUNE = "commune";
-		ZonePackager.ATT_PREFIXE = "prefixe";
-		ZonePackager.ATT_SECTION = "section";
-		ZonePackager.ATT_NUMERO = "numero";
+		ZonePackager.ATTRIBUTE_DEPARTEMENT= "departement";
+		ZonePackager.ATTRIBUTE_COMMUNE = "commune";
+		ZonePackager.ATTRIBUTE_PREFIXE = "prefixe";
+		ZonePackager.ATTRIBUTE_SECTION = "section";
+		ZonePackager.ATTRIBUTE_NUMERO = "numero";
 		
 	
 		
@@ -74,7 +74,7 @@ public class DataPreparator {
 			int nbElem = collToExport.size();
 			for (int i = 0; i < nbElem; i++) {
 				IFeature feat = collToExport.get(i);
-				if (Boolean.parseBoolean(feat.getAttribute(ZonePackager.ATT_SIMUL).toString())) {
+				if (Boolean.parseBoolean(feat.getAttribute(ZonePackager.ATTRIBUTE_SIMUL).toString())) {
 					collToExport.remove(i);
 					collToExport.getElements().add(0, feat);
 					break;
@@ -106,7 +106,7 @@ public class DataPreparator {
 		for (Object s : map.keySet().toArray()) {
 			long nbOfSimulatedParcel = map.get(s).getElements().stream()
 					.filter(feat -> (feat.getGeom().area() < areaMax))
-					.filter(feat -> (Boolean.parseBoolean(feat.getAttribute(ZonePackager.ATT_SIMUL).toString())))
+					.filter(feat -> (Boolean.parseBoolean(feat.getAttribute(ZonePackager.ATTRIBUTE_SIMUL).toString())))
 					.count();
 
 			System.out.println("For group : " + s + "  -  " + nbOfSimulatedParcel + "  entities");
