@@ -116,7 +116,7 @@ public class DataPreparator {
 		System.out.println("Number of features in map : " + count);
 
 		// Creating the folder
-		ZonePackager.exportFolder(map, folderOut);
+		ZonePackager.exportFolder(map, folderOut, false);
 
 		/////////////////////////////////////////////////////////////////////
 		// This code is not useful for a final production and for simulation as
