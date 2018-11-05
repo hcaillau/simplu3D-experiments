@@ -28,7 +28,7 @@ public class SmartPLUTaskRunner {
 		EPFIFTask.USE_DEMO_SAMPLER = false;
 		EPFIFTask.INTERSECTION = true;
 		EPFIFTask.FLOOR_HEIGHT = 3;
-		EPFIFTask.MAX_PARCEL_AREA = 10000; // now obsolete
+		EPFIFTask.MAX_PARCEL_AREA = 5000; // now obsolete
 		EPFIFTask.PARCEL_NAME = "parcelle.shp";
 		EPFIFTask.DEBUG_MODE = false;
 		// Indicates if simulation is proceeded or not
