@@ -67,7 +67,7 @@ public class BasicPostGISSimulator {
 
         // Chargement de l'environnement depuis PostGIS
         LoadPostGIS lP = new LoadPostGIS(host, port, database, user, pw);
-        Environnement env = lP.loadNoOCLRules();
+        Environnement env = lP.load();
 
         // Chargement des paramètres de simulation
         SimpluParametersPostgis p = new SimpluParametersPostgis(host, port, database, user, pw,
