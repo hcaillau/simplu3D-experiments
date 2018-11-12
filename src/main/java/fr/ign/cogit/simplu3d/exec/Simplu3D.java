@@ -153,7 +153,7 @@ public class Simplu3D {
 
     String background = p.getString("background_img");
 
-    String filePath = env.folder + background;
+    String filePath =  folder + background;
 
     feat.setRepresentation(new TexturedSurface(feat, TextureManager
         .textureLoading(filePath), dpUR.getX() - dpLL.getX(), dpUR.getY()

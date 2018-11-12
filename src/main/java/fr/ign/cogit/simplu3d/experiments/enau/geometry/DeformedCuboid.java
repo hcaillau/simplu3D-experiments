@@ -287,7 +287,7 @@ public class DeformedCuboid extends AbstractSimpleBuilding implements ISimPLU3DP
 		this.height3 = list.get(6);
 		this.height4 = list.get(7);
 		this.orientation = list.get(8);
-		this.setGenerated(true);
+		this.setNew(true);
 	}
 	
 	
@@ -303,7 +303,7 @@ public class DeformedCuboid extends AbstractSimpleBuilding implements ISimPLU3DP
 		this.height3 = val1[6];
 		this.height4 = val1[7];
 		this.orientation = val1[8];
-		this.setGenerated(true);
+		this.setNew(true);
 		
 	}
 
