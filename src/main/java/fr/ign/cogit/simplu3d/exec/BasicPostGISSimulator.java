@@ -4,7 +4,7 @@ import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 
 import fr.ign.cogit.simplu3d.experiments.thesis.predicate.UB16PredicateWithParameters;
-import fr.ign.cogit.simplu3d.io.nonStructDatabase.postgis.LoadPostGIS;
+import fr.ign.cogit.simplu3d.io.nonStructDatabase.postgis.LoaderPostGIS;
 import fr.ign.cogit.simplu3d.io.postgis.ExperimentationPostGIS;
 import fr.ign.cogit.simplu3d.io.postgis.SaveEnergyPostGIS;
 import fr.ign.cogit.simplu3d.io.shapefile.SaveGeneratedObjects;
@@ -66,7 +66,7 @@ public class BasicPostGISSimulator {
 				ExperimentationPostGIS exp = new ExperimentationPostGIS(host, port, database, user, pw, idExperiment);
 
         // Chargement de l'environnement depuis PostGIS
-        LoadPostGIS lP = new LoadPostGIS(host, port, database, user, pw);
+        LoaderPostGIS lP = new LoaderPostGIS(host, port, database, user, pw);
         Environnement env = lP.load();
 
         // Chargement des paramètres de simulation
