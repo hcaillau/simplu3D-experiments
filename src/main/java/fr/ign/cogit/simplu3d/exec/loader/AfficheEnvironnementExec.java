@@ -36,19 +36,7 @@ public class AfficheEnvironnementExec {
 	public static void main(String[] args) throws Exception {
 
 		Object1d.width = 4.0f;
-		/*
-		 * RoadImporter.ATT_NOM_RUE = "NOM_VOIE_G"; RoadImporter.ATT_LARGEUR =
-		 * "LARGEUR"; RoadImporter.ATT_TYPE = "NATURE";
-		 * 
-		 * LoaderSHP.NOM_FICHIER_PARCELLE = "parcelle.shp";
-		 * 
-		 * 
-		 * CadastralParcelLoader.ATT_HAS_TO_BE_SIMULATED = "simul";
-		 * 
-		 * PredicateIAUIDF.RIGHT_OF_LEFT_FOR_ART_71 =
-		 * SpecificCadastralBoundary.LEFT_SIDE;
-		 */
-
+	
 		CadastralParcelLoader.TYPE_ANNOTATION = 2;
 
 		ConstantRepresentation.backGroundColor = new Color(156, 180, 193);
